@@ -1,11 +1,7 @@
 import 'dart:async';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
-
-import '../Components/AppBarGradientContainer.dart';
-import '../Constants.dart';
+import '../Components/gradient_app_bar_container.dart';
 
 class BrowserScreen extends StatefulWidget {
   final String initialUrl;
@@ -69,7 +65,7 @@ class _BrowserScreenState extends State<BrowserScreen> {
             hintText: 'Enter a search term',
           ),
         ),
-        flexibleSpace: const AppBarGradientContainer(),
+        flexibleSpace: const GradientAppBarContainer(),
         actions: <Widget>[
           Padding(
             padding: const EdgeInsets.only(right: 10.0),

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import '../Screens/ScreenshotScreen.dart';
+import '../Screens/screenshot_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import '../Screens/HomeSceen.dart';
+import '../Screens/home_sceen.dart';
 import 'Constants.dart';
-import 'Screens/BrowserScreen.dart';
-import 'Screens/ExtractTextScreen.dart';
-import 'Tools/Logger.dart';
+import 'Screens/browser_screen.dart';
+import 'Screens/extract_text_screen.dart';
+import 'Tools/firebase_logging.dart';
 import 'firebase_options.dart';
 
 List<String> testDeviceIds = ['B50FC8BE31C425D9097C072C9A6E529B'];

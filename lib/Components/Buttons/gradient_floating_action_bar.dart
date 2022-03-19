@@ -1,13 +1,11 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import '../../Constants.dart';
 
-class GradientFab extends StatelessWidget {
+class GradientFloatingActionBar extends StatelessWidget {
   final IconData icon;
   final VoidCallback onPressed;
 
-  const GradientFab({Key? key, required this.icon, required this.onPressed})
+  const GradientFloatingActionBar({Key? key, required this.icon, required this.onPressed})
       : super(key: key);
 
   @override

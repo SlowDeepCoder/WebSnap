@@ -1,11 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
-import '../Components/AppBarGradientContainer.dart';
-import '../Components/Buttons/GradientFab.dart';
-import '../Constants.dart';
-import '../Models/Screenshot.dart';
-import '../Tools/ExternalApps.dart';
+import '../Components/gradient_app_bar_container.dart';
+import '../Components/Buttons/gradient_floating_action_bar.dart';
+import '../Models/screenshot.dart';
+import '../Tools/external_apps.dart';
 
 class ScreenshotScreen extends StatelessWidget {
   const ScreenshotScreen({Key? key}) : super(key: key);
@@ -33,9 +31,9 @@ class ScreenshotScreen extends StatelessWidget {
                   )),
             ),
           ],
-          flexibleSpace: const AppBarGradientContainer(),
+          flexibleSpace: const GradientAppBarContainer(),
         ),
-        floatingActionButton: GradientFab(
+        floatingActionButton: GradientFloatingActionBar(
             onPressed: () => ExternalApps.openScreenshot(screenshot),
             icon: Icons.edit),
         body: PhotoView.customChild(

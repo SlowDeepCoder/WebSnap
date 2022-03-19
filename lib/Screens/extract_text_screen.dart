@@ -1,9 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../Components/AppBarGradientContainer.dart';
-import '../Components/Buttons/GradientFab.dart';
-import '../Constants.dart';
-import '../Tools/ExternalApps.dart';
+import '../Components/gradient_app_bar_container.dart';
+import '../Components/Buttons/gradient_floating_action_bar.dart';
+import '../Tools/external_apps.dart';
 
 class ExtractTextScreen extends StatelessWidget {
   const ExtractTextScreen({Key? key}) : super(key: key);
@@ -32,9 +30,9 @@ class ExtractTextScreen extends StatelessWidget {
                   )),
             ),
           ],
-          flexibleSpace: const AppBarGradientContainer(),
+          flexibleSpace: const GradientAppBarContainer(),
         ),
-        floatingActionButton: GradientFab(
+        floatingActionButton: GradientFloatingActionBar(
           onPressed: () => ExternalApps.openText(path),
           icon: Icons.edit,
         ),
@@ -42,10 +40,10 @@ class ExtractTextScreen extends StatelessWidget {
             height: double.infinity,
             width: double.infinity,
             child: Padding(
-                padding: EdgeInsets.all(5),
+                padding: const EdgeInsets.all(5),
                 child: SelectableText(
                   extractedText,
-                  style: TextStyle(fontSize: 16),
+                  style: const TextStyle(fontSize: 16),
                 ))));
   }
 }

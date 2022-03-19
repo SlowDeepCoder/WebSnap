@@ -4,19 +4,18 @@ import 'dart:math';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import '../Components/AppBarGradientContainer.dart';
-import '../Constants.dart';
-import '../Managers/APIManager.dart';
-import '../Managers/DialogManager.dart';
-import '../Tools/Toast.dart';
-import '../Tools/Permissions.dart';
-import '../Components/Buttons/TakeScreenshotButton.dart';
-import '../Components/HomeBannerAd.dart';
-import '../Components/QueryForm.dart';
-import '../Managers/AdManager.dart';
-import '../Managers/StringManager.dart';
-import '../Models/Screenshot.dart';
-import '../Tools/Logger.dart';
+import '../Components/gradient_app_bar_container.dart';
+import '../Managers/api_manager.dart';
+import '../Managers/dialog_manager.dart';
+import '../Managers/toast_manager.dart';
+import '../Tools/permissions.dart';
+import '../Components/Buttons/take_screenshot_button.dart';
+import '../Components/banner_ad.dart';
+import '../Components/query_form.dart';
+import '../Managers/ad_manager.dart';
+import '../Managers/string_manager.dart';
+import '../Models/screenshot.dart';
+import '../Tools/firebase_logging.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -89,7 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     )),
               ),
             ],
-            flexibleSpace: const AppBarGradientContainer()),
+            flexibleSpace: const GradientAppBarContainer()),
         body: Stack(children: <Widget>[
           SizedBox(
               height: MediaQuery.of(context).size.height - 150.0,

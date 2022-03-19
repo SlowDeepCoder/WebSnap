@@ -1,7 +1,7 @@
 import 'package:open_file/open_file.dart';
 import 'package:share_plus/share_plus.dart';
 
-import '../Models/Screenshot.dart';
+import '../Models/screenshot.dart';
 
 class ExternalApps{
 
