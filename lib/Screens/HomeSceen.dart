@@ -4,12 +4,13 @@ import 'dart:math';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import '../Components/AppBarGradientContainer.dart';
 import '../Constants.dart';
 import '../Managers/APIManager.dart';
 import '../Managers/DialogManager.dart';
 import '../Tools/Toast.dart';
 import '../Tools/Permissions.dart';
-import '../Components/TakeScreenshotButton.dart';
+import '../Components/Buttons/TakeScreenshotButton.dart';
 import '../Components/HomeBannerAd.dart';
 import '../Components/QueryForm.dart';
 import '../Managers/AdManager.dart';
@@ -88,17 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     )),
               ),
             ],
-            flexibleSpace: Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: <Color>[
-                      ColorConstants.yellowFire,
-                      ColorConstants.redFire
-                    ]),
-              ),
-            )),
+            flexibleSpace: const AppBarGradientContainer()),
         body: Stack(children: <Widget>[
           SizedBox(
               height: MediaQuery.of(context).size.height - 150.0,
@@ -126,15 +117,6 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  // TakeScreenshotButton(
-                  //     text: "Extract Text",
-                  //     onPressed: () {
-                  //       bool validUrl =
-                  //           _formKey.currentState?.checkUrlValidity() ?? false;
-                  //       if (validUrl) {
-                  //         _onExtractTextPressed();
-                  //       }
-                  //     }),
                   TakeScreenshotButton(
                       output: _output,
                       onScreenshotPressed: () {

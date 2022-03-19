@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:cloud_functions/cloud_functions.dart';
-import '../Constants.dart';
 
 class APIManager {
   static const baseUrl = "https://api.apiflash.com/v1/urltoimage";
@@ -41,7 +41,7 @@ class APIManager {
     String encodedUrl = encodeUrl(url);
     String api =
         "$baseUrl?access_key=$key&url=$encodedUrl$query";
-    if (Constants.isProduction) {
+    if (kReleaseMode) {
       api = api + "&fresh=true";
     }
     return api;
@@ -58,7 +58,7 @@ class APIManager {
   }
 
   static Future<String> _fetchAPIKey() async {
-    if (Constants.isProduction) {
+    if (kReleaseMode) {
       final fetchKey = FirebaseFunctions.instance.httpsCallable('fetchKey');
       final keyResponse = await fetchKey();
       String key = keyResponse.data;

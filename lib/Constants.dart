@@ -1,14 +1,7 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 
 class Constants{
-  // static const FREE_DAILY_USES = 50;
-  // static const MAX_ADS_PER_DAY = 1;
-  // static const MINUTE_IN_MILLIS = 1000 * 60;
-  // static const HOUR_IN_MILLIS = MINUTE_IN_MILLIS * 60;
-  // static const DAY_IN_MILLIS = HOUR_IN_MILLIS * 24;
-  static const isProduction = false;
 }
 
 class ColorConstants {

@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
+import '../Components/AppBarGradientContainer.dart';
+import '../Components/Buttons/GradientFab.dart';
 import '../Constants.dart';
 import '../Models/Screenshot.dart';
 import '../Tools/ExternalApps.dart';
@@ -31,42 +33,11 @@ class ScreenshotScreen extends StatelessWidget {
                   )),
             ),
           ],
-          flexibleSpace: Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: <Color>[
-                    ColorConstants.yellowFire,
-                    ColorConstants.redFire
-                  ]),
-            ),
-          ),
+          flexibleSpace: const AppBarGradientContainer(),
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            ExternalApps.openScreenshot(screenshot);
-          },
-          backgroundColor: ColorConstants.mainOrange,
-          child: Container(
-            width: 60,
-            height: 60,
-            child: Icon(
-              Icons.edit,
-              size: 30,
-            ),
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: <Color>[
-                    ColorConstants.yellowFire,
-                    ColorConstants.redFire
-                  ]),
-            ),
-          ),
-        ),
+        floatingActionButton: GradientFab(
+            onPressed: () => ExternalApps.openScreenshot(screenshot),
+            icon: Icons.edit),
         body: PhotoView.customChild(
             minScale: PhotoViewComputedScale.contained * 1,
             maxScale: PhotoViewComputedScale.covered * 50,

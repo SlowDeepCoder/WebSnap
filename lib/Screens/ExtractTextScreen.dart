@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../Components/AppBarGradientContainer.dart';
+import '../Components/Buttons/GradientFab.dart';
 import '../Constants.dart';
 import '../Tools/ExternalApps.dart';
 
@@ -30,41 +32,12 @@ class ExtractTextScreen extends StatelessWidget {
                   )),
             ),
           ],
-          flexibleSpace: Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: <Color>[
-                    ColorConstants.yellowFire,
-                    ColorConstants.redFire
-                  ]),
-            ),
-          ),
+          flexibleSpace: const AppBarGradientContainer(),
         ),
-        floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              ExternalApps.openText(path );
-            },
-            backgroundColor: ColorConstants.mainOrange,
-            child: Container(
-              width: 60,
-              height: 60,
-              child: const Icon(
-                Icons.edit,
-                size: 30,
-              ),
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: <Color>[
-                      ColorConstants.yellowFire,
-                      ColorConstants.redFire
-                    ]),
-              ),
-            )),
+        floatingActionButton: GradientFab(
+          onPressed: () => ExternalApps.openText(path),
+          icon: Icons.edit,
+        ),
         body: SizedBox(
             height: double.infinity,
             width: double.infinity,
