@@ -49,6 +49,7 @@ class APIManager {
 
   static String encodeUrl(String url) {
     url = url.replaceAll(" ", "");
+    url = url.replaceAll("http://", "");
     if (!url.contains("https://")) {
       url = "https://" + url;
     }
@@ -59,8 +60,8 @@ class APIManager {
   static Future<String> _fetchAPIKey() async {
     if (kReleaseMode) {
       final fetchKey = FirebaseFunctions.instance.httpsCallable('fetchKey');
-      final keyResponse = await fetchKey();
-      String key = keyResponse.data;
+      final response = await fetchKey();
+      final String key = response.data;
       return key;
     }
     return "194532ef715f46c2975d705dc4806ce8";

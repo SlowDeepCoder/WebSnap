@@ -2,31 +2,28 @@ import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import '../Managers/string_manager.dart';
 
-class Screenshot  {
+class Screenshot {
   late final ImageProvider _image;
-  late final String _name, _path, _url;
+  late final String _path, _url;
 
-  Screenshot(this._image, this._name, this._path, this._url);
+  Screenshot(this._image, this._path, this._url);
 
-  ImageProvider getImage(){
+  ImageProvider getImage() {
     return _image;
   }
-  String getName(){
-    return _name;
-  }
-  String getPath(){
+
+  String getPath() {
     return _path;
   }
-  String getUrl(){
+
+  String getUrl() {
     return _url;
   }
 
-
-  Screenshot.create(String url, Uint8List memoryImage, String localPath){
+  Screenshot.create(Uint8List memoryImage, String url,  String localPath) {
+    String fileName = StringManager.getScreenshotNameFromUrl(url);
     _image = Image.memory(memoryImage).image;
-    _name = StringManager.getScreenshotNameFromUrl(url);
-    _path = localPath + '/$_name.png';
+    _path = localPath + '/$fileName.png';
     _url = url;
   }
-
 }

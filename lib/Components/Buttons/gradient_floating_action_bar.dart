@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../Constants.dart';
+import '../../constants.dart';
 
 class GradientFloatingActionBar extends StatelessWidget {
   final IconData icon;

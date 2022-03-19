@@ -3,26 +3,26 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:gradient_widgets/gradient_widgets.dart';
-import '../../Constants.dart';
+import '../../constants.dart';
 import '../query_form.dart';
 
-class TakeScreenshotButton extends StatefulWidget {
+class ExtractDataButton extends StatefulWidget {
   final VoidCallback onScreenshotPressed;
   final VoidCallback onExtractTextPressed;
-  final OutputType output;
+  final OutputType outputType;
 
-  const TakeScreenshotButton(
+  const ExtractDataButton(
       {Key? key,
       required this.onScreenshotPressed,
-      required this.output,
+      required this.outputType,
       required this.onExtractTextPressed})
       : super(key: key);
 
   @override
-  State<TakeScreenshotButton> createState() => _TakeScreenshotButtonState();
+  State<ExtractDataButton> createState() => _ExtractDataButtonState();
 }
 
-class _TakeScreenshotButtonState extends State<TakeScreenshotButton> {
+class _ExtractDataButtonState extends State<ExtractDataButton> {
   bool _isKeyboard = false;
   late final StreamSubscription _keyboardSubscription;
 
@@ -48,27 +48,7 @@ class _TakeScreenshotButtonState extends State<TakeScreenshotButton> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.output == OutputType.image) {
-      return Visibility(
-        visible: !_isKeyboard,
-        child: Container(
-          margin: const EdgeInsets.all(10),
-          height: 50,
-          child: GradientButton(
-            shapeRadius: BorderRadius.circular(5),
-            gradient: const LinearGradient(
-                colors: [ColorConstants.redFire, ColorConstants.yellowFire]),
-            shadowColor: Gradients.rainbowBlue.colors.last.withOpacity(0.5),
-            callback: widget.onScreenshotPressed,
-            increaseWidthBy: MediaQuery.of(context).size.width - 100,
-            increaseHeightBy: 30,
-            child: const Text("Take Screenshot",
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
-          ),
-        ),
-      );
-    }
-
+    final extractScreenshot = widget.outputType == OutputType.image;
     return Visibility(
       visible: !_isKeyboard,
       child: Container(
@@ -79,11 +59,11 @@ class _TakeScreenshotButtonState extends State<TakeScreenshotButton> {
           gradient: const LinearGradient(
               colors: [ColorConstants.redFire, ColorConstants.yellowFire]),
           shadowColor: Gradients.rainbowBlue.colors.last.withOpacity(0.5),
-          callback: widget.onExtractTextPressed,
+          callback: extractScreenshot ? widget.onScreenshotPressed : widget.onExtractTextPressed,
           increaseWidthBy: MediaQuery.of(context).size.width - 100,
           increaseHeightBy: 30,
-          child: const Text("Extract Text",
-              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
+          child: Text(extractScreenshot ? "Take Screenshot" : "Extract Text",
+              style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
         ),
       ),
     );

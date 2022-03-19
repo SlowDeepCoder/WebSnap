@@ -1,19 +1,8 @@
 import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
 import 'package:path_provider/path_provider.dart';
 
 class StringManager {
-  // static String nullableIntToString(int? number) {
-  //   if (number == null || number < 0) {
-  //     return "00";
-  //   }
-  //   if (number >= 0 && number < 10) {
-  //     return "0" + number.toString();
-  //   }
-  //   return number.toString();
-  // }
-
   static String getScreenshotNameFromUrl(String url) {
     const dotChar = ".";
     final dotCount = dotChar.allMatches(url).length;

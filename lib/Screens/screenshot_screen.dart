@@ -8,11 +8,13 @@ import '../Tools/external_apps.dart';
 class ScreenshotScreen extends StatelessWidget {
   const ScreenshotScreen({Key? key}) : super(key: key);
 
+
+
   @override
   Widget build(BuildContext context) {
+
     Screenshot screenshot =
         ModalRoute.of(context)!.settings.arguments as Screenshot;
-
     return Scaffold(
         backgroundColor: const Color(0x00000000),
         appBar: AppBar(

@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import '../Constants.dart';
+import '../constants.dart';
 
 class GradientAppBarContainer extends StatelessWidget {
   const GradientAppBarContainer({Key? key}) : super(key: key);

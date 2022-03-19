@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:test_flutter/Models/extracted_text.dart';
 import '../Components/gradient_app_bar_container.dart';
 import '../Components/Buttons/gradient_floating_action_bar.dart';
 import '../Tools/external_apps.dart';
@@ -8,20 +9,21 @@ class ExtractTextScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final arguments = ModalRoute.of(context)!.settings.arguments as Map;
-    String url = arguments["url"];
-    String path = arguments["path"];
-    String extractedText = arguments["text"];
+    final extractedText = ModalRoute.of(context)!.settings.arguments as ExtractedText;
+    // final arguments = ModalRoute.of(context)!.settings.arguments as Map;
+    // String url = arguments["url"];
+    // String path = arguments["path"];
+    // String extractedText = arguments["text"];
     return Scaffold(
         backgroundColor: const Color(0x00000000),
         appBar: AppBar(
-          title: Text(url),
+          title: Text(extractedText.getUrl()),
           actions: <Widget>[
             Padding(
               padding: const EdgeInsets.only(right: 10.0),
               child: IconButton(
                   onPressed: () {
-                    ExternalApps.shareText(path);
+                    ExternalApps.shareText(extractedText.getPath());
                   },
                   icon: const Icon(
                     Icons.share,
@@ -33,7 +35,7 @@ class ExtractTextScreen extends StatelessWidget {
           flexibleSpace: const GradientAppBarContainer(),
         ),
         floatingActionButton: GradientFloatingActionBar(
-          onPressed: () => ExternalApps.openText(path),
+          onPressed: () => ExternalApps.openText(extractedText.getPath()),
           icon: Icons.edit,
         ),
         body: SizedBox(
@@ -42,7 +44,7 @@ class ExtractTextScreen extends StatelessWidget {
             child: Padding(
                 padding: const EdgeInsets.all(5),
                 child: SelectableText(
-                  extractedText,
+                  extractedText.gettext(),
                   style: const TextStyle(fontSize: 16),
                 ))));
   }

@@ -4,12 +4,14 @@ import 'dart:math';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:test_flutter/constants.dart';
 import '../Components/gradient_app_bar_container.dart';
 import '../Managers/api_manager.dart';
 import '../Managers/dialog_manager.dart';
 import '../Managers/toast_manager.dart';
+import '../Models/extracted_text.dart';
 import '../Tools/permissions.dart';
-import '../Components/Buttons/take_screenshot_button.dart';
+import '../Components/Buttons/extract_data_button.dart';
 import '../Components/banner_ad.dart';
 import '../Components/query_form.dart';
 import '../Managers/ad_manager.dart';
@@ -41,10 +43,10 @@ class _HomeScreenState extends State<HomeScreen> {
             _interstitialAd = ad;
             _interstitialAd?.fullScreenContentCallback =
                 FullScreenContentCallback(onAdDismissedFullScreenContent: (ad) {
-              ad.dispose();
-            }, onAdFailedToShowFullScreenContent: (ad, _) {
-              ad.dispose();
-            });
+                  ad.dispose();
+                }, onAdFailedToShowFullScreenContent: (ad, _) {
+                  ad.dispose();
+                });
           },
           onAdFailedToLoad: (LoadAdError error) {
             debugPrint('InterstitialAd failed to load: $error');
@@ -73,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 Text("WebSnap",
                     style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 25)),
+                    TextStyle(fontWeight: FontWeight.bold, fontSize: 25)),
               ],
             ),
             actions: <Widget>[
@@ -91,46 +93,50 @@ class _HomeScreenState extends State<HomeScreen> {
             flexibleSpace: const GradientAppBarContainer()),
         body: Stack(children: <Widget>[
           SizedBox(
-              height: MediaQuery.of(context).size.height - 150.0,
+              height: MediaQuery
+                  .of(context)
+                  .size
+                  .height - 150.0,
               child: SingleChildScrollView(
                   child: Container(
-                padding: const EdgeInsets.all(5),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    const HomeBannerAd(),
-                    QueryForm(
-                      key: _formKey,
-                      onRadioChange: () {
-                        setState(() {
-                          _output = _formKey.currentState?.getOutputType() ??
-                              OutputType.image;
-                        });
-                      },
+                    padding: const EdgeInsets.all(5),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        const HomeBannerAd(),
+                        QueryForm(
+                          key: _formKey,
+                          onRadioChange: () {
+                            setState(() {
+                              _output =
+                                  _formKey.currentState?.getOutputType() ??
+                                      OutputType.image;
+                            });
+                          },
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ))),
+                  ))),
           Align(
               alignment: Alignment.bottomCenter,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  TakeScreenshotButton(
-                      output: _output,
+                  ExtractDataButton(
+                      outputType: _output,
                       onScreenshotPressed: () {
                         Logger.event(name: "Take screenshot pressed");
                         bool validForm =
                             _formKey.currentState?.checkFormValidity() ?? false;
                         if (validForm) {
-                          _onTakeScreenshotPressed();
+                          _extractData(_output);
                         }
                       },
                       onExtractTextPressed: () {
                         bool validUrl =
                             _formKey.currentState?.checkUrlValidity() ?? false;
                         if (validUrl) {
-                          _onExtractTextPressed();
+                          _extractData(_output);
                         }
                       })
                 ],
@@ -147,7 +153,7 @@ class _HomeScreenState extends State<HomeScreen> {
         _loadInterstitialAd();
       }
     }
-    else{
+    else {
       debugPrint("Missed Interstitial Ad");
     }
   }
@@ -158,10 +164,10 @@ class _HomeScreenState extends State<HomeScreen> {
     _rollInterstitialAd(0);
   }
 
-  void _navigateToExtractedTextScreen(String extractedText, String url, String path) {
+  void _navigateToExtractedTextScreen(ExtractedText extractedText) {
     Navigator.of(context, rootNavigator: true).pop();
-    Map hashmap = {"url": url, "text": extractedText, "path": path};
-    Navigator.pushNamed(context, '/extracted_text', arguments: hashmap);
+    // Map hashmap = {"url": url, "text": extractedText, "path": path};
+    Navigator.pushNamed(context, '/extracted_text', arguments: extractedText);
     _rollInterstitialAd(2);
   }
 
@@ -169,46 +175,56 @@ class _HomeScreenState extends State<HomeScreen> {
   void _onSearchPressed() async {
     FocusScope.of(context).unfocus();
     String url =
-        _formKey.currentState?.getUrl() ?? "www.google.com";
+        _formKey.currentState?.getUrl() ?? Constants.defaultUrl;
     _navigateToBrowserScreen(url);
   }
 
   void _navigateToBrowserScreen(String url) async {
     final result =
-        await Navigator.pushNamed(context, '/browser', arguments: url);
+    await Navigator.pushNamed(context, '/browser', arguments: url);
     if (result != null) {
       _formKey.currentState?.setUrl('$result');
     }
   }
 
-  void _onExtractTextPressed() async {
+  void _extractData(OutputType type) async{
     FocusScope.of(context).unfocus();
     await Permissions.checkStoragePermission();
-    DialogManager.openLoadingDialog(context, "Extracting Text");
     final url = _formKey.currentState!.getUrl();
-    final extractedText = await APIManager.fetchExtractedText(url);
-    if (extractedText != null) {
-      final name = StringManager.getTextNameFromUrl(url);
+    switch(type) {
+      case OutputType.image:
+        _takeScreenshot(url);
+        break;
+      case OutputType.text:
+        _extractText(url);
+        break;
+    }
+  }
+
+
+  void _extractText(String url) async {
+    DialogManager.openLoadingDialog(context, "Extracting Text");
+    final text = await APIManager.fetchExtractedText(url);
+    if (text != null) {
       final localPath = await StringManager.getLocalPath();
-      final path = localPath + '/$name.txt';
-      await _saveExtractedText(extractedText, path);
-      _navigateToExtractedTextScreen(extractedText, url, path);
+      final extractedText = ExtractedText.create(text, url, localPath);
+      // final name = StringManager.getTextNameFromUrl(url);
+      // final path = localPath + '/$name.txt';
+      await _saveExtractedText(extractedText);
+      _navigateToExtractedTextScreen(extractedText);
     } else {
       ToastManager.showToast("Error loading page.\nPlease check url.", true);
       Navigator.of(context, rootNavigator: true).pop();
     }
   }
 
-  void _onTakeScreenshotPressed() async {
-    FocusScope.of(context).unfocus();
-    await Permissions.checkStoragePermission();
+  void _takeScreenshot(String url) async {
     DialogManager.openLoadingDialog(context, "Taking Screenshot");
-    final url = _formKey.currentState!.getUrl();
     final query = _formKey.currentState!.getQuery();
     final memoryImage = await APIManager.fetchScreenshot(url, query);
     if (memoryImage != null) {
       final localPath = await StringManager.getLocalPath();
-      final screenshot = Screenshot.create(url, memoryImage, localPath);
+      final screenshot = Screenshot.create(memoryImage, url , localPath);
       await _saveScreenshot(screenshot, memoryImage);
       _navigateToScreenshotScreen(screenshot);
     } else {
@@ -217,8 +233,8 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  Future _saveExtractedText(String text, String path) async {
-    await File(path).writeAsString(text).then((_) => {}).catchError((error) {
+  Future _saveExtractedText(ExtractedText extractedText) async {
+    await File(extractedText.getPath()).writeAsString(extractedText.gettext()).then((_) => {}).catchError((error) {
       Navigator.of(context, rootNavigator: true).pop();
     });
   }
