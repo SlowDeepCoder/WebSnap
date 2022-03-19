@@ -5,7 +5,6 @@ import '../Components/gradient_app_bar_container.dart';
 
 class BrowserScreen extends StatefulWidget {
   final String initialUrl;
-
   const BrowserScreen({Key? key, required this.initialUrl}) : super(key: key);
 
   @override

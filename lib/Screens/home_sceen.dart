@@ -4,6 +4,7 @@ import 'dart:math';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:test_flutter/Components/gradient_simple_app_bar.dart';
 import 'package:test_flutter/constants.dart';
 import '../Components/gradient_app_bar_container.dart';
 import '../Managers/api_manager.dart';
@@ -65,32 +66,33 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         resizeToAvoidBottomInset: true,
-        appBar: AppBar(
-            titleSpacing: 0.0,
-            title: Row(
-              children: const <Widget>[
-                Image(
-                  image: AssetImage('assets/images/foreground6.png'),
-                  height: 75,
-                ),
-                Text("WebSnap",
-                    style:
-                    TextStyle(fontWeight: FontWeight.bold, fontSize: 25)),
-              ],
-            ),
-            actions: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(right: 10.0),
-                child: IconButton(
-                    onPressed: _onSearchPressed,
-                    icon: const Icon(
-                      Icons.search,
-                      size: 30,
-                      color: Colors.white,
-                    )),
-              ),
-            ],
-            flexibleSpace: const GradientAppBarContainer()),
+        appBar: GradientSimpleAppBar(title: "WebSnap", onPressed: _onSearchPressed, icon: Icons.search),
+        // appBar: AppBar(
+        //     titleSpacing: 0.0,
+        //     title: Row(
+        //       children: const <Widget>[
+        //         Image(
+        //           image: AssetImage('assets/images/foreground6.png'),
+        //           height: 75,
+        //         ),
+        //         Text("WebSnap",
+        //             style:
+        //             TextStyle(fontWeight: FontWeight.bold, fontSize: 25)),
+        //       ],
+        //     ),
+        //     actions: <Widget>[
+        //       Padding(
+        //         padding: const EdgeInsets.only(right: 10.0),
+        //         child: IconButton(
+        //             onPressed: _onSearchPressed,
+        //             icon: const Icon(
+        //               Icons.search,
+        //               size: 30,
+        //               color: Colors.white,
+        //             )),
+        //       ),
+        //     ],
+        //     flexibleSpace: const GradientAppBarContainer()),
         body: Stack(children: <Widget>[
           SizedBox(
               height: MediaQuery
@@ -234,7 +236,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future _saveExtractedText(ExtractedText extractedText) async {
-    await File(extractedText.getPath()).writeAsString(extractedText.gettext()).then((_) => {}).catchError((error) {
+    await File(extractedText.getPath()).writeAsString(extractedText.getText()).then((_) => {}).catchError((error) {
       Navigator.of(context, rootNavigator: true).pop();
     });
   }

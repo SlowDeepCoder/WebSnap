@@ -1,5 +1,6 @@
 import 'package:open_file/open_file.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:test_flutter/Models/extracted_text.dart';
 
 import '../Models/screenshot.dart';
 
@@ -9,8 +10,8 @@ class ExternalApps{
     Share.shareFiles([screenshot.getPath()]);
   }
 
-  static void shareText(String path) {
-    Share.shareFiles([path]);
+  static void shareText(ExtractedText extractedText) {
+    Share.shareFiles([extractedText.getPath()]);
   }
 
 

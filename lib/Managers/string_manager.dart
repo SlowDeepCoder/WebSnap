@@ -3,52 +3,42 @@ import 'package:flutter/cupertino.dart';
 import 'package:path_provider/path_provider.dart';
 
 class StringManager {
-  static String getScreenshotNameFromUrl(String url) {
+  static String getNameFromUrl(String url) {
     const dotChar = ".";
+    String name = "";
     final dotCount = dotChar.allMatches(url).length;
     if (dotCount >= 2) {
       final startIndex = url.indexOf(dotChar);
       final endIndex = url.indexOf(dotChar, startIndex + 1);
-      String urlHost =
-          url.substring(startIndex + dotChar.length, endIndex).trim();
-      debugPrint("urlHost: " + urlHost);
-      final imageName = "screenshot_$urlHost" "_" +
-          (Random().nextInt(100000) + 100).toString();
-      return imageName;
+      name = url.substring(startIndex + dotChar.length, endIndex);
+      // final imageName = "screenshot_$urlHost" "_" +
+      //     (Random().nextInt(100000) + 100).toString();
     } else if (dotCount == 1) {
-      final dotIndex = url.indexOf(dotChar);
-      final urlHost = url.substring(0, dotIndex);
-      debugPrint("urlHost: " + urlHost);
-      final imageName = "snapshot_$urlHost" "_" +
-          (Random().nextInt(100000) + 100).toString();
-      return imageName;
+      final endIndex = url.indexOf(dotChar);
+      name = url.substring(0, endIndex);
+      // final imageName =
+      //     "snapshot_$urlHost" "_" + (Random().nextInt(100000) + 100).toString();
+    } else {
+      name = url;
     }
-    return url;
+    return name;
   }
 
-  static String getTextNameFromUrl(String url) {
-    const dotChar = ".";
-    final dotCount = dotChar.allMatches(url).length;
-    if (dotCount >= 2) {
-      final startIndex = url.indexOf(dotChar);
-      final endIndex = url.indexOf(dotChar, startIndex + 1);
-      String urlHost =
-          url.substring(startIndex + dotChar.length, endIndex).trim();
-      debugPrint("urlHost: " + urlHost);
-      final imageName = "extracted_text_$urlHost" "_" +
-          (Random().nextInt(100000) + 100).toString();
-      return imageName;
-    } else if (dotCount == 1) {
-      final dotIndex = url.indexOf(dotChar);
-      final urlHost = url.substring(0, dotIndex);
-      debugPrint("urlHost: " + urlHost);
-      final imageName = "extracted_$urlHost" "_" +
-          (Random().nextInt(100000) + 100).toString();
-      return imageName;
-    }
-    return url;
+  static String getScreenshotFileName(String url) {
+    final name = getNameFromUrl(url);
+    final randomInt = (Random().nextInt(100000) + 100);
+    final fileName = "screenshot_${name}_$randomInt.png";
+    return fileName;
   }
 
+
+
+  static String getExtractedTextFileName(String url) {
+    final name = getNameFromUrl(url);
+    final randomInt = (Random().nextInt(100000) + 100);
+    final fileName = "extracted_text_${name}_$randomInt.txt";
+    return fileName;
+  }
 
   static Future<String> getLocalPath() async {
     final directory = await getApplicationDocumentsDirectory();

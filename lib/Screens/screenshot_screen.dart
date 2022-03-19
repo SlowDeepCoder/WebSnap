@@ -1,40 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
-import '../Components/gradient_app_bar_container.dart';
 import '../Components/Buttons/gradient_floating_action_bar.dart';
+import '../Components/gradient_simple_app_bar.dart';
 import '../Models/screenshot.dart';
 import '../Tools/external_apps.dart';
 
 class ScreenshotScreen extends StatelessWidget {
-  const ScreenshotScreen({Key? key}) : super(key: key);
+  final Screenshot screenshot;
+  const ScreenshotScreen({Key? key, required this.screenshot}) : super(key: key);
 
 
 
   @override
   Widget build(BuildContext context) {
-
-    Screenshot screenshot =
-        ModalRoute.of(context)!.settings.arguments as Screenshot;
     return Scaffold(
         backgroundColor: const Color(0x00000000),
-        appBar: AppBar(
-          title: Text(screenshot.getUrl()),
-          actions: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(right: 10.0),
-              child: IconButton(
-                  onPressed: () {
-                    ExternalApps.shareScreenshot(screenshot);
-                  },
-                  icon: const Icon(
-                    Icons.share,
-                    size: 30,
-                    color: Colors.white,
-                  )),
-            ),
-          ],
-          flexibleSpace: const GradientAppBarContainer(),
-        ),
+
+        appBar: GradientSimpleAppBar(title: screenshot.getUrl(), onPressed: () =>  ExternalApps.shareScreenshot(screenshot), icon: Icons.share),
         floatingActionButton: GradientFloatingActionBar(
             onPressed: () => ExternalApps.openScreenshot(screenshot),
             icon: Icons.edit),

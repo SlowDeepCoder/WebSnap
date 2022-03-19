@@ -8,7 +8,7 @@ class ExtractedText  {
 
   ExtractedText(this._text, this._path, this._url);
 
-  String gettext(){
+  String getText(){
     return _text;
   }
   String getPath(){
@@ -20,9 +20,9 @@ class ExtractedText  {
 
 
   ExtractedText.create(String text, String url, String localPath){
-    String fileName = StringManager.getTextNameFromUrl(url);
+    String fileName = StringManager.getExtractedTextFileName(url);
     _text = text;
-    _path = localPath + '/$fileName.txt';
+    _path = localPath + '/$fileName';
     _url = url;
   }
 

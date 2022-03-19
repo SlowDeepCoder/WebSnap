@@ -21,9 +21,9 @@ class Screenshot {
   }
 
   Screenshot.create(Uint8List memoryImage, String url,  String localPath) {
-    String fileName = StringManager.getScreenshotNameFromUrl(url);
+    String fileName = StringManager.getScreenshotFileName(url);
     _image = Image.memory(memoryImage).image;
-    _path = localPath + '/$fileName.png';
+    _path = localPath + '/$fileName';
     _url = url;
   }
 }
