@@ -1,7 +1,8 @@
 import 'dart:core';
 import 'package:expansion_tile_card/expansion_tile_card.dart';
 import 'package:flutter/material.dart';
-import '../constants.dart';
+import '../../Constants/color_constants.dart';
+import '../../Constants/default_constants.dart';
 
 enum OutputType { image, text }
 
@@ -33,7 +34,7 @@ class QueryFormState extends State<QueryForm> {
   }
 
   void _setStandardFormValues() {
-    _urlController.text = Constants.defaultUrl;
+    _urlController.text = DefaultConstants.defaultUrl;
     _widthController.text = "1920";
     _heightController.text = "1080";
     _delayController.text = "0";

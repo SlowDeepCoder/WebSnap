@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'gradient_app_bar_container.dart';
+import 'Containers/gradient_app_bar_container.dart';
 
 // A SimpleAppBar is a AppBar with a title and a single action.
 class GradientSimpleAppBar extends StatelessWidget implements PreferredSizeWidget {

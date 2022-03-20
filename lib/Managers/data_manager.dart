@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:cloud_functions/cloud_functions.dart';
 
-class APIManager {
+class DataManager {
   static const baseUrl = "https://api.apiflash.com/v1/urltoimage";
 
   static Future<Uint8List?> fetchScreenshot(String url, String query) async {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../Dialogs/loading_dialog.dart';
+import '../UI/Dialogs/loading_dialog.dart';
 
 class DialogManager {
   static void openLoadingDialog(BuildContext context, String title) {

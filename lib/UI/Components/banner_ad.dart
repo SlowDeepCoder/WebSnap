@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import '../Managers/ad_manager.dart';
+import '../../Managers/ad_manager.dart';
 
 class HomeBannerAd extends StatefulWidget {
   const HomeBannerAd({Key? key}) : super(key: key);

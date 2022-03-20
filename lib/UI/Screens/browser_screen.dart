@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
-import '../Components/gradient_app_bar_container.dart';
+import '../Components/Containers/gradient_app_bar_container.dart';
 
 class BrowserScreen extends StatefulWidget {
   final String initialUrl;

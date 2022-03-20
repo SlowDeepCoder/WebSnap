@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:test_flutter/Models/extracted_text.dart';
+import '../../ExternalTools/external_apps.dart';
 import '../Components/Buttons/gradient_floating_action_bar.dart';
 import '../Components/gradient_simple_app_bar.dart';
-import '../Tools/external_apps.dart';
 
 class ExtractTextScreen extends StatelessWidget {
   final ExtractedText extractedText;
@@ -17,7 +17,7 @@ class ExtractTextScreen extends StatelessWidget {
             onPressed: () => ExternalApps.shareText(extractedText),
             icon: Icons.share),
         floatingActionButton: GradientFloatingActionBar(
-          onPressed: () => ExternalApps.openText(extractedText.getPath()),
+          onPressed: () => ExternalApps.openText(extractedText),
           icon: Icons.edit,
         ),
         body: SizedBox(

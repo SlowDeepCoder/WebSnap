@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:test_flutter/Models/screenshot.dart';
-import '../Screens/screenshot_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import '../Screens/home_sceen.dart';
 import 'Models/extracted_text.dart';
-import 'constants.dart';
-import 'Screens/browser_screen.dart';
-import 'Screens/extract_text_screen.dart';
+import 'UI/Screens/extract_text_screen.dart';
+import 'UI/Screens/home_screen.dart';
+import 'UI/Screens/screenshot_screen.dart';
+import 'UI/Screens/browser_screen.dart';
+import 'Constants/color_constants.dart';
 import 'firebase_options.dart';
 
 List<String> testDeviceIds = ['B50FC8BE31C425D9097C072C9A6E529B'];

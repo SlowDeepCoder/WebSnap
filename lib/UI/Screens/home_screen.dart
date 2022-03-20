@@ -4,21 +4,20 @@ import 'dart:math';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:test_flutter/Components/gradient_simple_app_bar.dart';
-import 'package:test_flutter/constants.dart';
-import '../Components/gradient_app_bar_container.dart';
-import '../Managers/api_manager.dart';
-import '../Managers/dialog_manager.dart';
-import '../Managers/toast_manager.dart';
-import '../Models/extracted_text.dart';
-import '../Tools/permissions.dart';
+import '../Components/gradient_simple_app_bar.dart';
+import '../../Managers/data_manager.dart';
+import '../../Managers/dialog_manager.dart';
+import '../../Managers/toast_manager.dart';
+import '../../Models/extracted_text.dart';
+import '../../Managers/permissions_manager.dart';
+import '../../Constants/default_constants.dart';
 import '../Components/Buttons/extract_data_button.dart';
 import '../Components/banner_ad.dart';
 import '../Components/query_form.dart';
-import '../Managers/ad_manager.dart';
-import '../Managers/string_manager.dart';
-import '../Models/screenshot.dart';
-import '../Tools/firebase_logging.dart';
+import '../../Managers/ad_manager.dart';
+import '../../Managers/file_manager.dart';
+import '../../Models/screenshot.dart';
+import '../../ExternalTools/firebase_logging.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -34,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _loadInterstitialAd() {
     final id = AdManager.getInterstitialAdId();
-    debugPrint(id);
+    // ToDo: Try to move this function to the AdManager class.
     InterstitialAd.load(
         adUnitId: id,
         request: const AdRequest(),
@@ -99,7 +98,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ExtractDataButton(
                       outputType: _outputType,
                       onScreenshotPressed: () {
-                        Logger.event(name: "Take screenshot pressed");
+                        Analytics.log(name: "Take screenshot pressed");
                         bool validForm =
                             _queryFormKey.currentState?.checkFormValidity() ?? false;
                         if (validForm) {
@@ -131,23 +130,20 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+
+
   void _navigateToScreenshotScreen(Screenshot screenshot) {
-    Navigator.of(context, rootNavigator: true).pop();
+    _popDialog();
     Navigator.pushNamed(context, '/screenshot', arguments: screenshot);
     _rollInterstitialAd(0);
   }
 
   void _navigateToExtractedTextScreen(ExtractedText extractedText) {
-    Navigator.of(context, rootNavigator: true).pop();
+    _popDialog();
     Navigator.pushNamed(context, '/extracted_text', arguments: extractedText);
     _rollInterstitialAd(2);
   }
 
-  void _onSearchPressed() async {
-    FocusScope.of(context).unfocus();
-    String url = _queryFormKey.currentState?.getUrl() ?? Constants.defaultUrl;
-    _navigateToBrowserScreen(url);
-  }
 
   void _navigateToBrowserScreen(String url) async {
     final result =
@@ -157,9 +153,16 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+
+  void _onSearchPressed() async {
+    FocusScope.of(context).unfocus();
+    String url = _queryFormKey.currentState?.getUrl() ?? DefaultConstants.defaultUrl;
+    _navigateToBrowserScreen(url);
+  }
+
   void _extractData(OutputType type) async {
     FocusScope.of(context).unfocus();
-    await Permissions.checkStoragePermission();
+    await PermissionsManager.checkStoragePermission();
     final url = _queryFormKey.currentState!.getUrl();
     if (type == OutputType.image) {
       _takeScreenshot(url);
@@ -170,11 +173,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _extractText(String url) async {
     DialogManager.openLoadingDialog(context, "Extracting Text");
-    final text = await APIManager.fetchExtractedText(url);
+    final text = await DataManager.fetchExtractedText(url);
     if (text != null) {
-      final localPath = await StringManager.getLocalPath();
+      final localPath = await FileManager.getLocalPath();
       final extractedText = ExtractedText.create(text, url, localPath);
-      await _saveExtractedText(extractedText);
+      await extractedText.saveToPath();
       _navigateToExtractedTextScreen(extractedText);
     } else {
       onErrorLoadingUrl();
@@ -184,33 +187,26 @@ class _HomeScreenState extends State<HomeScreen> {
   void _takeScreenshot(String url) async {
     DialogManager.openLoadingDialog(context, "Taking Screenshot");
     final query = _queryFormKey.currentState?.getQuery() ?? "";
-    final memoryImage = await APIManager.fetchScreenshot(url, query);
+    final memoryImage = await DataManager.fetchScreenshot(url, query);
     if (memoryImage != null) {
-      final localPath = await StringManager.getLocalPath();
+      final localPath = await FileManager.getLocalPath();
       final screenshot = Screenshot.create(memoryImage, url, localPath);
-      await _saveScreenshot(screenshot, memoryImage);
+      await screenshot.saveToPath(memoryImage);
       _navigateToScreenshotScreen(screenshot);
     } else {
       onErrorLoadingUrl();
     }
   }
 
+  // Display a toast and pop the loading dialog.
   void onErrorLoadingUrl() {
     ToastManager.showToast("Error loading page.\nPlease check url.", true);
+    _popDialog;
+  }
+
+
+
+  void _popDialog(){
     Navigator.of(context, rootNavigator: true).pop();
-  }
-
-  Future _saveExtractedText(ExtractedText extractedText) async {
-    await File(extractedText.getPath())
-        .writeAsString(extractedText.getText())
-        .then((_) => {})
-        .catchError((error) {});
-  }
-
-  Future _saveScreenshot(Screenshot screenshot, Uint8List memoryImage) async {
-    await File(screenshot.getPath())
-        .writeAsBytes(memoryImage)
-        .then((_) => {})
-        .catchError((error) {});
   }
 }

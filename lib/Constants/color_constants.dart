@@ -1,13 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 
-class Constants{
-  static const defaultUrl = "www.google.com";
-  static const defaultHeight = 1080;
-  static const defaultWidth = 1920;
-  static const defaultDelay = 0;
-}
-
 class ColorConstants {
   static const mainOrange = Color(0xFFE65904);
   static const darkOrange = Color(0xFFBA4005);

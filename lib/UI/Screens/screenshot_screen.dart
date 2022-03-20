@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import '../Components/Buttons/gradient_floating_action_bar.dart';
 import '../Components/gradient_simple_app_bar.dart';
-import '../Models/screenshot.dart';
-import '../Tools/external_apps.dart';
+import '../../Models/screenshot.dart';
+import '../../ExternalTools/external_apps.dart';
 
 class ScreenshotScreen extends StatelessWidget {
   final Screenshot screenshot;

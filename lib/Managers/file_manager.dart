@@ -2,7 +2,7 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:path_provider/path_provider.dart';
 
-class StringManager {
+class FileManager {
   static String getNameFromUrl(String url) {
     const dotChar = ".";
     String name = "";
@@ -11,13 +11,9 @@ class StringManager {
       final startIndex = url.indexOf(dotChar);
       final endIndex = url.indexOf(dotChar, startIndex + 1);
       name = url.substring(startIndex + dotChar.length, endIndex);
-      // final imageName = "screenshot_$urlHost" "_" +
-      //     (Random().nextInt(100000) + 100).toString();
     } else if (dotCount == 1) {
       final endIndex = url.indexOf(dotChar);
       name = url.substring(0, endIndex);
-      // final imageName =
-      //     "snapshot_$urlHost" "_" + (Random().nextInt(100000) + 100).toString();
     } else {
       name = url;
     }
