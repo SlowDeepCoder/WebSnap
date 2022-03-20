@@ -53,7 +53,7 @@ class DataManager {
     if (!url.contains("https://")) {
       url = "https://" + url;
     }
-    final encoded = Uri.encodeComponent(url);
+    final encoded = Uri.encodeFull(url);
     return encoded;
   }
 

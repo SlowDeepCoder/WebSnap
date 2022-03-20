@@ -4,16 +4,19 @@ import 'package:flutter/material.dart';
 import 'Containers/gradient_app_bar_container.dart';
 
 // A SimpleAppBar is a AppBar with a title and a single action.
-class GradientSimpleAppBar extends StatelessWidget implements PreferredSizeWidget {
+class GradientSimpleAppBar extends StatelessWidget
+    implements PreferredSizeWidget {
   final String title;
+  final bool hasLogo;
   final IconData icon;
   final VoidCallback onPressed;
 
   const GradientSimpleAppBar(
       {Key? key,
       required this.title,
+      required this.onPressed,
       required this.icon,
-      required this.onPressed})
+      required this.hasLogo})
       : super(key: key);
 
   @override
@@ -22,13 +25,14 @@ class GradientSimpleAppBar extends StatelessWidget implements PreferredSizeWidge
         titleSpacing: 0.0,
         title: Row(
           children: <Widget>[
-            const Image(
-              image: AssetImage('assets/images/foreground6.png'),
-              height: 75,
+            _getLogoImage(),
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 150,
+              child: Text(title,
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: hasLogo ? 25 : 16)),
             ),
-            Text(title,
-                style:
-                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 25)),
           ],
         ),
         actions: <Widget>[
@@ -44,6 +48,15 @@ class GradientSimpleAppBar extends StatelessWidget implements PreferredSizeWidge
           ),
         ],
         flexibleSpace: const GradientAppBarContainer());
+  }
+
+  Widget _getLogoImage() {
+    return hasLogo
+        ? const Image(
+            image: AssetImage('assets/images/foreground6.png'),
+            height: 75,
+          )
+        : Container();
   }
 
   @override

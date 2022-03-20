@@ -16,6 +16,7 @@ class ScreenshotScreen extends StatelessWidget {
     return Scaffold(
         backgroundColor: const Color(0x00000000),
         appBar: GradientSimpleAppBar(
+          hasLogo: false,
             title: screenshot.getUrl(),
             onPressed: () => ExternalApps.shareScreenshot(screenshot),
             icon: Icons.share),

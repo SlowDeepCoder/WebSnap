@@ -13,6 +13,7 @@ class ExtractTextScreen extends StatelessWidget {
     return Scaffold(
         backgroundColor: const Color(0x00000000),
         appBar: GradientSimpleAppBar(
+          hasLogo: false,
             title: extractedText.getUrl(),
             onPressed: () => ExternalApps.shareText(extractedText),
             icon: Icons.share),

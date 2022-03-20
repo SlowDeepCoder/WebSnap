@@ -55,10 +55,9 @@ class _ExtractDataButtonState extends State<ExtractDataButton> {
         margin: const EdgeInsets.all(10),
         height: 50,
         child: GradientButton(
-          shapeRadius: BorderRadius.circular(5),
+          shapeRadius: BorderRadius.circular(3),
           gradient: const LinearGradient(
               colors: [ColorConstants.redFire, ColorConstants.yellowFire]),
-          shadowColor: Gradients.rainbowBlue.colors.last.withOpacity(0.5),
           callback: extractScreenshot ? widget.onScreenshotPressed : widget.onExtractTextPressed,
           increaseWidthBy: MediaQuery.of(context).size.width - 100,
           increaseHeightBy: 30,

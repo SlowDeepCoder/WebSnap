@@ -1,10 +1,13 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
+import 'package:test_flutter/Managers/data_manager.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 import '../Components/Containers/gradient_app_bar_container.dart';
 
 class BrowserScreen extends StatefulWidget {
   final String initialUrl;
+
   const BrowserScreen({Key? key, required this.initialUrl}) : super(key: key);
 
   @override
@@ -12,41 +15,43 @@ class BrowserScreen extends StatefulWidget {
 }
 
 class _BrowserScreenState extends State<BrowserScreen> {
-  final  _urlController = TextEditingController();
-  final _flutterWebViewPlugin = FlutterWebviewPlugin();
+  final _urlController = TextEditingController();
+  late WebViewController _webViewController;
   final _urlFocusNode = FocusNode();
-  late final StreamSubscription _urlChangeListener;
   late String _url;
 
   @override
   void initState() {
     super.initState();
-    _setUrl(widget.initialUrl);
-    _addUrlListeners();
-  }
-
-  void _addUrlListeners() {
-    _urlChangeListener = _flutterWebViewPlugin.onUrlChanged.listen((event) {
-      if (mounted) {
-        setState(() {
-          _urlController.text = event;
-        });
-      }
+    final url = _getUrlFromString(widget.initialUrl);
+    _setUrl(url);
+    WebView.platform = SurfaceAndroidWebView();
+    _urlController.addListener(() {
+      setState(() {});
     });
   }
 
   @override
   void dispose() {
     super.dispose();
-    _urlChangeListener.cancel();
-    _flutterWebViewPlugin.dispose();
     _urlFocusNode.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return WebviewScaffold(
-      url: _url,
+    return Scaffold(
+      body: GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: WebView(
+              onWebViewCreated: (controller) {
+                _webViewController = controller;
+              },
+              navigationDelegate: (NavigationRequest request) {
+                _setUrl(request.url);
+                return NavigationDecision.navigate;
+              },
+              initialUrl: _url,
+              javascriptMode: JavascriptMode.unrestricted)),
       appBar: AppBar(
         title: TextField(
           onTap: () {
@@ -88,24 +93,30 @@ class _BrowserScreenState extends State<BrowserScreen> {
   }
 
   void _onSearchSubmitted(String value) async {
-    _setUrl(value);
     FocusScope.of(context).unfocus();
-    await _flutterWebViewPlugin.reloadUrl(_url);
-    //ToDo: Check if it's possible to remove this statement
+    final url = _getUrlFromString(value);
+    await _webViewController.loadUrl(url);
     if (mounted) {
       setState(() {
-        debugPrint(_url);
+        _setUrl(url);
+        debugPrint(url);
       });
     }
   }
 
-  void _setUrl(String value) {
+  String _getUrlFromString(String value) {
+    String url;
     if (value.contains(".")) {
-      _url = value.replaceAll(" ", "");
+      url = value.replaceAll(" ", "");
     } else {
       String query = value.trim().replaceAll(" ", "+");
-      _url = "www.google.com/search?q=" + query;
+      url = "https://www.google.com/search?q=" + query;
     }
+    return DataManager.encodeUrl(url);
+  }
+
+  void _setUrl(String url) {
+    _url = url;
     _urlController.text = _url;
   }
 

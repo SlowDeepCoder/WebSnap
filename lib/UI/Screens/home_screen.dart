@@ -1,7 +1,4 @@
-import 'dart:async';
-import 'dart:io';
 import 'dart:math';
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import '../Components/gradient_simple_app_bar.dart';
@@ -9,7 +6,7 @@ import '../../Managers/data_manager.dart';
 import '../../Managers/dialog_manager.dart';
 import '../../Managers/toast_manager.dart';
 import '../../Models/extracted_text.dart';
-import '../../Managers/permissions_manager.dart';
+import '../../Managers/permission_manager.dart';
 import '../../Constants/default_constants.dart';
 import '../Components/Buttons/extract_data_button.dart';
 import '../Components/banner_ad.dart';
@@ -57,7 +54,8 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _loadInterstitialAd();
-    _outputType = _queryFormKey.currentState?.getOutputType() ?? OutputType.image;
+    _outputType =
+        _queryFormKey.currentState?.getOutputType() ?? OutputType.image;
   }
 
   @override
@@ -65,56 +63,56 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
         resizeToAvoidBottomInset: true,
         appBar: GradientSimpleAppBar(
+            hasLogo: true,
             title: "WebSnap", onPressed: _onSearchPressed, icon: Icons.search),
-        body: Stack(children: <Widget>[
-          SizedBox(
-              height: MediaQuery.of(context).size.height - 150.0,
-              child: SingleChildScrollView(
-                  child: Container(
-                padding: const EdgeInsets.all(5),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    const HomeBannerAd(),
-                    QueryForm(
-                      key: _queryFormKey,
-                      onRadioChange: () {
-                        setState(() {
-                          _outputType =
-                              _queryFormKey.currentState?.getOutputType() ??
-                                  OutputType.image;
-                        });
-                      },
+        body: GestureDetector(
+            onTap: _unFocusForm,
+            child: Stack(children: <Widget>[
+              SizedBox(
+                  height: MediaQuery.of(context).size.height - 150.0,
+                  child: SingleChildScrollView(
+                      child: Padding(
+                    padding: const EdgeInsets.all(5),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        const HomeBannerAd(),
+                        QueryForm(
+                          key: _queryFormKey,
+                          onRadioChange: () {
+                            setState(() {
+                              _outputType =
+                                  _queryFormKey.currentState?.getOutputType() ??
+                                      OutputType.image;
+                            });
+                          },
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ))),
-          Align(
-              alignment: Alignment.bottomCenter,
-              // Todo: Try to remove this column
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  ExtractDataButton(
+                  ))),
+              Align(
+                  alignment: Alignment.bottomCenter,
+                  child: ExtractDataButton(
                       outputType: _outputType,
                       onScreenshotPressed: () {
                         Analytics.log(name: "Take screenshot pressed");
                         bool validForm =
-                            _queryFormKey.currentState?.checkFormValidity() ?? false;
+                            _queryFormKey.currentState?.checkFormValidity() ??
+                                false;
                         if (validForm) {
                           _extractData(_outputType);
                         }
                       },
                       onExtractTextPressed: () {
+                        Analytics.log(name: "Extract text pressed");
                         bool validUrl =
-                            _queryFormKey.currentState?.checkUrlValidity() ?? false;
+                            _queryFormKey.currentState?.checkUrlValidity() ??
+                                false;
                         if (validUrl) {
                           _extractData(_outputType);
                         }
-                      })
-                ],
-              )),
-        ]));
+                      })),
+            ])));
   }
 
   void _rollInterstitialAd(int max) async {
@@ -130,8 +128,6 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-
-
   void _navigateToScreenshotScreen(Screenshot screenshot) {
     _popDialog();
     Navigator.pushNamed(context, '/screenshot', arguments: screenshot);
@@ -144,7 +140,6 @@ class _HomeScreenState extends State<HomeScreen> {
     _rollInterstitialAd(2);
   }
 
-
   void _navigateToBrowserScreen(String url) async {
     final result =
         await Navigator.pushNamed(context, '/browser', arguments: url);
@@ -153,16 +148,16 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-
   void _onSearchPressed() async {
-    FocusScope.of(context).unfocus();
-    String url = _queryFormKey.currentState?.getUrl() ?? DefaultConstants.defaultUrl;
+    _unFocusForm();
+    String url =
+        _queryFormKey.currentState?.getUrl() ?? DefaultConstants.defaultUrl;
     _navigateToBrowserScreen(url);
   }
 
   void _extractData(OutputType type) async {
-    FocusScope.of(context).unfocus();
-    await PermissionsManager.checkStoragePermission();
+    _unFocusForm();
+    await PermissionManager.checkStoragePermission();
     final url = _queryFormKey.currentState!.getUrl();
     if (type == OutputType.image) {
       _takeScreenshot(url);
@@ -204,9 +199,11 @@ class _HomeScreenState extends State<HomeScreen> {
     _popDialog;
   }
 
+  void _unFocusForm() {
+    FocusScope.of(context).unfocus();
+  }
 
-
-  void _popDialog(){
+  void _popDialog() {
     Navigator.of(context, rootNavigator: true).pop();
   }
 }
