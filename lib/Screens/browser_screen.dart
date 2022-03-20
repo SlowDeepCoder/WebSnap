@@ -12,10 +12,10 @@ class BrowserScreen extends StatefulWidget {
 }
 
 class _BrowserScreenState extends State<BrowserScreen> {
-  final TextEditingController _urlController = TextEditingController();
+  final  _urlController = TextEditingController();
+  final _flutterWebViewPlugin = FlutterWebviewPlugin();
   final _urlFocusNode = FocusNode();
   late final StreamSubscription _urlChangeListener;
-  final _flutterWebViewPlugin = FlutterWebviewPlugin();
   late String _url;
 
   @override
@@ -79,7 +79,7 @@ class _BrowserScreenState extends State<BrowserScreen> {
     return IconButton(
         onPressed: _urlFocusNode.hasFocus
             ? () => _onSearchSubmitted(_urlController.text)
-            : () => _onCheckPressed(),
+            : () => _onSubmitPressed(),
         icon: Icon(
           _urlFocusNode.hasFocus ? Icons.search : Icons.check,
           size: 30,
@@ -91,6 +91,7 @@ class _BrowserScreenState extends State<BrowserScreen> {
     _setUrl(value);
     FocusScope.of(context).unfocus();
     await _flutterWebViewPlugin.reloadUrl(_url);
+    //ToDo: Check if it's possible to remove this statement
     if (mounted) {
       setState(() {
         debugPrint(_url);
@@ -108,7 +109,7 @@ class _BrowserScreenState extends State<BrowserScreen> {
     _urlController.text = _url;
   }
 
-  void _onCheckPressed() {
+  void _onSubmitPressed() {
     Navigator.pop(context, _urlController.text);
   }
 }

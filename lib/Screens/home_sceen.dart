@@ -28,10 +28,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final GlobalKey<QueryFormState> _formKey = GlobalKey();
+  final GlobalKey<QueryFormState> _queryFormKey = GlobalKey();
   InterstitialAd? _interstitialAd;
-  late OutputType _output;
-
+  late OutputType _outputType;
 
   void _loadInterstitialAd() {
     final id = AdManager.getInterstitialAdId();
@@ -44,10 +43,10 @@ class _HomeScreenState extends State<HomeScreen> {
             _interstitialAd = ad;
             _interstitialAd?.fullScreenContentCallback =
                 FullScreenContentCallback(onAdDismissedFullScreenContent: (ad) {
-                  ad.dispose();
-                }, onAdFailedToShowFullScreenContent: (ad, _) {
-                  ad.dispose();
-                });
+              ad.dispose();
+            }, onAdFailedToShowFullScreenContent: (ad, _) {
+              ad.dispose();
+            });
           },
           onAdFailedToLoad: (LoadAdError error) {
             debugPrint('InterstitialAd failed to load: $error');
@@ -59,86 +58,59 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _loadInterstitialAd();
-    _output = _formKey.currentState?.getOutputType() ?? OutputType.image;
+    _outputType = _queryFormKey.currentState?.getOutputType() ?? OutputType.image;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         resizeToAvoidBottomInset: true,
-        appBar: GradientSimpleAppBar(title: "WebSnap", onPressed: _onSearchPressed, icon: Icons.search),
-        // appBar: AppBar(
-        //     titleSpacing: 0.0,
-        //     title: Row(
-        //       children: const <Widget>[
-        //         Image(
-        //           image: AssetImage('assets/images/foreground6.png'),
-        //           height: 75,
-        //         ),
-        //         Text("WebSnap",
-        //             style:
-        //             TextStyle(fontWeight: FontWeight.bold, fontSize: 25)),
-        //       ],
-        //     ),
-        //     actions: <Widget>[
-        //       Padding(
-        //         padding: const EdgeInsets.only(right: 10.0),
-        //         child: IconButton(
-        //             onPressed: _onSearchPressed,
-        //             icon: const Icon(
-        //               Icons.search,
-        //               size: 30,
-        //               color: Colors.white,
-        //             )),
-        //       ),
-        //     ],
-        //     flexibleSpace: const GradientAppBarContainer()),
+        appBar: GradientSimpleAppBar(
+            title: "WebSnap", onPressed: _onSearchPressed, icon: Icons.search),
         body: Stack(children: <Widget>[
           SizedBox(
-              height: MediaQuery
-                  .of(context)
-                  .size
-                  .height - 150.0,
+              height: MediaQuery.of(context).size.height - 150.0,
               child: SingleChildScrollView(
                   child: Container(
-                    padding: const EdgeInsets.all(5),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        const HomeBannerAd(),
-                        QueryForm(
-                          key: _formKey,
-                          onRadioChange: () {
-                            setState(() {
-                              _output =
-                                  _formKey.currentState?.getOutputType() ??
-                                      OutputType.image;
-                            });
-                          },
-                        ),
-                      ],
+                padding: const EdgeInsets.all(5),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    const HomeBannerAd(),
+                    QueryForm(
+                      key: _queryFormKey,
+                      onRadioChange: () {
+                        setState(() {
+                          _outputType =
+                              _queryFormKey.currentState?.getOutputType() ??
+                                  OutputType.image;
+                        });
+                      },
                     ),
-                  ))),
+                  ],
+                ),
+              ))),
           Align(
               alignment: Alignment.bottomCenter,
+              // Todo: Try to remove this column
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   ExtractDataButton(
-                      outputType: _output,
+                      outputType: _outputType,
                       onScreenshotPressed: () {
                         Logger.event(name: "Take screenshot pressed");
                         bool validForm =
-                            _formKey.currentState?.checkFormValidity() ?? false;
+                            _queryFormKey.currentState?.checkFormValidity() ?? false;
                         if (validForm) {
-                          _extractData(_output);
+                          _extractData(_outputType);
                         }
                       },
                       onExtractTextPressed: () {
                         bool validUrl =
-                            _formKey.currentState?.checkUrlValidity() ?? false;
+                            _queryFormKey.currentState?.checkUrlValidity() ?? false;
                         if (validUrl) {
-                          _extractData(_output);
+                          _extractData(_outputType);
                         }
                       })
                 ],
@@ -154,8 +126,7 @@ class _HomeScreenState extends State<HomeScreen> {
         await _interstitialAd!.show();
         _loadInterstitialAd();
       }
-    }
-    else {
+    } else {
       debugPrint("Missed Interstitial Ad");
     }
   }
@@ -168,41 +139,34 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _navigateToExtractedTextScreen(ExtractedText extractedText) {
     Navigator.of(context, rootNavigator: true).pop();
-    // Map hashmap = {"url": url, "text": extractedText, "path": path};
     Navigator.pushNamed(context, '/extracted_text', arguments: extractedText);
     _rollInterstitialAd(2);
   }
 
-
   void _onSearchPressed() async {
     FocusScope.of(context).unfocus();
-    String url =
-        _formKey.currentState?.getUrl() ?? Constants.defaultUrl;
+    String url = _queryFormKey.currentState?.getUrl() ?? Constants.defaultUrl;
     _navigateToBrowserScreen(url);
   }
 
   void _navigateToBrowserScreen(String url) async {
     final result =
-    await Navigator.pushNamed(context, '/browser', arguments: url);
+        await Navigator.pushNamed(context, '/browser', arguments: url);
     if (result != null) {
-      _formKey.currentState?.setUrl('$result');
+      _queryFormKey.currentState?.setUrl('$result');
     }
   }
 
-  void _extractData(OutputType type) async{
+  void _extractData(OutputType type) async {
     FocusScope.of(context).unfocus();
     await Permissions.checkStoragePermission();
-    final url = _formKey.currentState!.getUrl();
-    switch(type) {
-      case OutputType.image:
-        _takeScreenshot(url);
-        break;
-      case OutputType.text:
-        _extractText(url);
-        break;
+    final url = _queryFormKey.currentState!.getUrl();
+    if (type == OutputType.image) {
+      _takeScreenshot(url);
+    } else if (type == OutputType.text) {
+      _extractText(url);
     }
   }
-
 
   void _extractText(String url) async {
     DialogManager.openLoadingDialog(context, "Extracting Text");
@@ -210,43 +174,43 @@ class _HomeScreenState extends State<HomeScreen> {
     if (text != null) {
       final localPath = await StringManager.getLocalPath();
       final extractedText = ExtractedText.create(text, url, localPath);
-      // final name = StringManager.getTextNameFromUrl(url);
-      // final path = localPath + '/$name.txt';
       await _saveExtractedText(extractedText);
       _navigateToExtractedTextScreen(extractedText);
     } else {
-      ToastManager.showToast("Error loading page.\nPlease check url.", true);
-      Navigator.of(context, rootNavigator: true).pop();
+      onErrorLoadingUrl();
     }
   }
 
   void _takeScreenshot(String url) async {
     DialogManager.openLoadingDialog(context, "Taking Screenshot");
-    final query = _formKey.currentState!.getQuery();
+    final query = _queryFormKey.currentState?.getQuery() ?? "";
     final memoryImage = await APIManager.fetchScreenshot(url, query);
     if (memoryImage != null) {
       final localPath = await StringManager.getLocalPath();
-      final screenshot = Screenshot.create(memoryImage, url , localPath);
+      final screenshot = Screenshot.create(memoryImage, url, localPath);
       await _saveScreenshot(screenshot, memoryImage);
       _navigateToScreenshotScreen(screenshot);
     } else {
-      ToastManager.showToast("Error loading page.\nPlease check url.", true);
-      Navigator.of(context, rootNavigator: true).pop();
+      onErrorLoadingUrl();
     }
   }
 
+  void onErrorLoadingUrl() {
+    ToastManager.showToast("Error loading page.\nPlease check url.", true);
+    Navigator.of(context, rootNavigator: true).pop();
+  }
+
   Future _saveExtractedText(ExtractedText extractedText) async {
-    await File(extractedText.getPath()).writeAsString(extractedText.getText()).then((_) => {}).catchError((error) {
-      Navigator.of(context, rootNavigator: true).pop();
-    });
+    await File(extractedText.getPath())
+        .writeAsString(extractedText.getText())
+        .then((_) => {})
+        .catchError((error) {});
   }
 
   Future _saveScreenshot(Screenshot screenshot, Uint8List memoryImage) async {
     await File(screenshot.getPath())
         .writeAsBytes(memoryImage)
         .then((_) => {})
-        .catchError((error) {
-      Navigator.of(context, rootNavigator: true).pop();
-    });
+        .catchError((error) {});
   }
 }

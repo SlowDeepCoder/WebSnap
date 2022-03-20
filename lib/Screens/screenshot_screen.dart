@@ -7,16 +7,18 @@ import '../Tools/external_apps.dart';
 
 class ScreenshotScreen extends StatelessWidget {
   final Screenshot screenshot;
-  const ScreenshotScreen({Key? key, required this.screenshot}) : super(key: key);
 
-
+  const ScreenshotScreen({Key? key, required this.screenshot})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: const Color(0x00000000),
-
-        appBar: GradientSimpleAppBar(title: screenshot.getUrl(), onPressed: () =>  ExternalApps.shareScreenshot(screenshot), icon: Icons.share),
+        appBar: GradientSimpleAppBar(
+            title: screenshot.getUrl(),
+            onPressed: () => ExternalApps.shareScreenshot(screenshot),
+            icon: Icons.share),
         floatingActionButton: GradientFloatingActionBar(
             onPressed: () => ExternalApps.openScreenshot(screenshot),
             icon: Icons.edit),
